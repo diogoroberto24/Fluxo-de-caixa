@@ -1,0 +1,122 @@
+[
+  {
+    "id": "1755718311008",
+    "clientId": "1",
+    "valor": 123,
+    "dataPagamento": "2025-08-20",
+    "observacoes": "",
+    "dataRegistro": "2025-08-20T19:31:51.008Z"
+  },
+  {
+    "id": "1755718311009",
+    "clientId": "1",
+    "valor": 500,
+    "dataPagamento": "2023-11-01",
+    "observacoes": "Pagamento teste 1",
+    "dataRegistro": "2023-11-01T10:00:00.000Z"
+  },
+  {
+    "id": "1755718311010",
+    "clientId": "1",
+    "valor": 750,
+    "dataPagamento": "2023-11-05",
+    "observacoes": "Pagamento teste 2",
+    "dataRegistro": "2023-11-05T10:00:00.000Z"
+  },
+  {
+    "id": "1755718311011",
+    "clientId": "1",
+    "valor": 300,
+    "dataPagamento": "2023-11-10",
+    "observacoes": "Pagamento teste 3",
+    "dataRegistro": "2023-11-10T10:00:00.000Z"
+  },
+  {
+    "id": "1755718311012",
+    "clientId": "1",
+    "valor": 900,
+    "dataPagamento": "2023-11-15",
+    "observacoes": "Pagamento teste 4",
+    "dataRegistro": "2023-11-15T10:00:00.000Z"
+  },
+  {
+    "id": "1755718311013",
+    "clientId": "1",
+    "valor": 600,
+    "dataPagamento": "2023-11-20",
+    "observacoes": "Pagamento teste 5",
+    "dataRegistro": "2023-11-20T10:00:00.000Z"
+  },
+  {
+    "id": "1755718311014",
+    "clientId": "1",
+    "valor": 400,
+    "dataPagamento": "2023-10-05",
+    "observacoes": "Pagamento outubro 1",
+    "dataRegistro": "2023-10-05T10:00:00.000Z"
+  },
+  {
+    "id": "1755718311015",
+    "clientId": "1",
+    "valor": 650,
+    "dataPagamento": "2023-10-12",
+    "observacoes": "Pagamento outubro 2",
+    "dataRegistro": "2023-10-12T10:00:00.000Z"
+  },
+  {
+    "id": "1755718311016",
+    "clientId": "1",
+    "valor": 800,
+    "dataPagamento": "2023-10-20",
+    "observacoes": "Pagamento outubro 3",
+    "dataRegistro": "2023-10-20T10:00:00.000Z"
+  },
+  {
+    "id": "1755718311017",
+    "clientId": "1",
+    "valor": 550,
+    "dataPagamento": "2023-10-28",
+    "observacoes": "Pagamento outubro 4",
+    "dataRegistro": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "id": "1755718311018",
+    "clientId": "1",
+    "valor": 350,
+    "dataPagamento": "2023-12-03",
+    "observacoes": "Pagamento dezembro 1",
+    "dataRegistro": "2023-12-03T10:00:00.000Z"
+  },
+  {
+    "id": "1755718311019",
+    "clientId": "1",
+    "valor": 720,
+    "dataPagamento": "2023-12-10",
+    "observacoes": "Pagamento dezembro 2",
+    "dataRegistro": "2023-12-10T10:00:00.000Z"
+  },
+  {
+    "id": "1755718311020",
+    "clientId": "1",
+    "valor": 480,
+    "dataPagamento": "2023-12-18",
+    "observacoes": "Pagamento dezembro 3",
+    "dataRegistro": "2023-12-18T10:00:00.000Z"
+  },
+  {
+    "id": "1755718311021",
+    "clientId": "1",
+    "valor": 950,
+    "dataPagamento": "2023-12-26",
+    "observacoes": "Pagamento dezembro 4",
+    "dataRegistro": "2023-12-26T10:00:00.000Z"
+  },
+  {
+    "id": "1756584144859",
+    "clientId": "1",
+    "valor": 1000,
+    "dataPagamento": "2025-08-30",
+    "observacoes": "Pagamento de teste",
+    "dataRegistro": "2025-08-30T20:02:24.859Z"
+  }
+]

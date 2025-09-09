@@ -1,0 +1,54 @@
+[
+  {
+    "id": "1",
+    "nome": "asdad",
+    "cnpjCpf": "1234",
+    "enderecoCnpj": "safd",
+    "tipoTributacao": "MEI",
+    "email": "asda@gmail.com",
+    "telefone": "123123",
+    "honorariosMensais": 1000,
+    "socios": "",
+    "modulos": [
+      "Fiscal"
+    ],
+    "dataCadastro": "2025-08-20T19:31:35.774Z",
+    "status": "em-dia",
+    "historicoHonorarios": [
+      {
+        "valor": 123,
+        "dataAlteracao": "2025-08-20T19:31:35.774Z",
+        "tipo": "cadastro"
+      },
+      {
+        "valor": 1000,
+        "valorAnterior": 123,
+        "dataAlteracao": "2025-08-20T20:12:41.706Z",
+        "tipo": "alteracao"
+      }
+    ]
+  },
+  {
+    "id": "002",
+    "nome": "Cliente Teste",
+    "cnpjCpf": "12345678901",
+    "enderecoCnpj": "Rua Teste, 123",
+    "tipoTributacao": "Simples Nacional",
+    "email": "teste@exemplo.com",
+    "telefone": "11999999999",
+    "honorariosMensais": 1000,
+    "socios": "",
+    "modulos": [],
+    "dataCadastro": "2025-08-30T20:02:05.465Z",
+    "status": "inativo",
+    "historicoHonorarios": [
+      {
+        "valor": 1000,
+        "dataAlteracao": "2025-08-30T20:02:05.465Z",
+        "tipo": "cadastro"
+      }
+    ],
+    "motivoInativacao": "Cliente encerrou contrato",
+    "dataInativacao": "2025-08-30T20:04:40.707Z"
+  }
+]

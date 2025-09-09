@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anderson Cardozo Acessoria</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/regenerator-runtime@0.13.7/runtime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.6.2/dist/fetch.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-chart-line"></i> Anderson Cardozo Acessoria</h1>
+            <div id="current-date" class="current-date"></div>
+            <nav class="nav">
+                <button class="nav-btn active" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </button>
+                <button class="nav-btn" data-tab="clients">
+                    <i class="fas fa-users"></i> Clientes
+                </button>
+                <button class="nav-btn" data-tab="payments">
+                    <i class="fas fa-money-bill-wave"></i> Recebimentos
+                </button>
+                <button class="nav-btn" data-tab="bills">
+                    <i class="fas fa-file-invoice-dollar"></i> Contas a Pagar
+                </button>
+                <button class="nav-btn" data-tab="relatorios-section">
+                    <i class="fas fa-chart-bar"></i> Relatórios
+                </button>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <!-- Dashboard -->
+            <section id="dashboard" class="tab-content active">
+                <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+                
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Faturamento Previsto</h3>
+                            <p class="card-value" id="faturamento-previsto">R$ 0,00</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-cash-register"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Faturamento Arrecadado</h3>
+                            <p class="card-value" id="faturamento-arrecadado">R$ 0,00</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Faturamento do Ano</h3>
+                            <p class="card-value" id="faturamento-ano">R$ 0,00</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Total de Clientes</h3>
+                            <p class="card-value" id="total-clientes">0</p>
+                        </div>
+                    </div>
+
+                    <div class="card clickable" onclick="showClientsList('em-dia')">
+                        <div class="card-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Clientes em Dia</h3>
+                            <p class="card-value" id="clientes-em-dia">0</p>
+                            <small class="card-hint">Clique para ver detalhes</small>
+                        </div>
+                    </div>
+
+                    <div class="card clickable" onclick="showClientsList('inadimplente')">
+                        <div class="card-icon danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Clientes Inadimplentes</h3>
+                            <p class="card-value" id="clientes-inadimplentes">0</p>
+                            <small class="card-hint">Clique para ver detalhes</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-actions">
+                    <button class="btn btn-primary" onclick="runAutomaticBilling()">
+                        <i class="fas fa-paper-plane"></i> Executar Cobranças Automáticas
+                    </button>
+                    <button class="btn btn-secondary" onclick="refreshDashboard()">
+                        <i class="fas fa-sync-alt"></i> Atualizar Dashboard
+                    </button>
+                    <button id="bills-to-pay-button" class="btn btn-info">
+                        <i class="fas fa-file-invoice-dollar"></i> Contas a Pagar
+                    </button>
+                </div>
+                
+                <!-- Pagamentos Recentes -->
+                <div class="recent-payments-section">
+                    <h3><i class="fas fa-money-bill-wave"></i> Pagamentos Recentes</h3>
+                    <div id="recent-payments-list" class="list-container">
+                        <!-- Pagamentos recentes serão carregados aqui -->
+                    </div>
+                </div>
+
+                <!-- Gráficos de Faturamento -->
+                <div class="charts-section">
+                    <h3><i class="fas fa-chart-line"></i> Análise de Faturamento</h3>
+                    
+                    <div class="chart-controls">
+                        <div class="chart-period-selector">
+                            <label for="chartPeriod">Período:</label>
+                            <select id="chartPeriod" onchange="updateChart()">
+                                <option value="6">Últimos 6 meses</option>
+                                <option value="12">Últimos 12 meses</option>
+                                <option value="24">Últimos 24 meses</option>
+                            </select>
+                        </div>
+                        <div class="chart-type-selector">
+                            <label for="chartType">Tipo de Gráfico:</label>
+                            <select id="chartType" onchange="updateChart()">
+                                <option value="line">Linha</option>
+                                <option value="bar">Barras</option>
+                                <option value="area">Área</option>
+                                <option value="daily">Diário (Mês Atual)</option>
+                            </select>
+                        </div>
+                        <div class="chart-month-selector">
+                            <label for="chartMonth">Mês Específico:</label>
+                            <div class="month-selector-controls">
+                                <select id="chartMonth" onchange="updateChart()">
+                                    <option value="">Selecione um mês</option>
+                                    <option value="01">Janeiro</option>
+                                    <option value="02">Fevereiro</option>
+                                    <option value="03">Março</option>
+                                    <option value="04">Abril</option>
+                                    <option value="05">Maio</option>
+                                    <option value="06">Junho</option>
+                                    <option value="07">Julho</option>
+                                    <option value="08">Agosto</option>
+                                    <option value="09">Setembro</option>
+                                    <option value="10">Outubro</option>
+                                    <option value="11">Novembro</option>
+                                    <option value="12">Dezembro</option>
+                                </select>
+                                <select id="chartYear" onchange="updateChart()">
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="chart-comparison-selector">
+                            <label for="comparisonPeriod">Comparar com:</label>
+                            <select id="comparisonPeriod" onchange="updateChart()">
+                                <option value="">Sem comparação</option>
+                                <option value="previous_month">Mês Anterior</option>
+                                <option value="previous_quarter">Último Trimestre</option>
+                                <option value="previous_semester">Último Semestre</option>
+                                <option value="previous_year">Ano Anterior</option>
+                                <option value="custom">Período Personalizado</option>
+                            </select>
+                        </div>
+                        <div id="customComparisonPeriod" class="custom-comparison-period" style="display: none;">
+                            <div class="form-group">
+                                <label for="comparisonStartDate">Data Inicial:</label>
+                                <input type="date" id="comparisonStartDate" onchange="updateChart()">
+                            </div>
+                            <div class="form-group">
+                                <label for="comparisonEndDate">Data Final:</label>
+                                <input type="date" id="comparisonEndDate" onchange="updateChart()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="faturamentoChart" width="800" height="400" style="display: block; width: 100%; height: 350px;"></canvas>
+                    </div>
+
+                    <div class="chart-summary">
+                        <div class="summary-card">
+                            <h4>Maior Faturamento</h4>
+                            <p id="maiorFaturamento">R$ 0,00</p>
+                            <small id="mesMaiorFaturamento">-</small>
+                        </div>
+                        <div class="summary-card">
+                            <h4>Menor Faturamento</h4>
+                            <p id="menorFaturamento">R$ 0,00</p>
+                            <small id="mesMenorFaturamento">-</small>
+                        </div>
+                        <div class="summary-card">
+                            <h4>Média Mensal</h4>
+                            <p id="mediaFaturamento">R$ 0,00</p>
+                            <small>Período selecionado</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bills to Pay -->
+            <section id="bills" class="tab-content">
+                <h2><i class="fas fa-file-invoice-dollar"></i> Contas a Pagar</h2>
+                
+                <div class="section-header">
+                    <button class="btn btn-primary" onclick="openBillModal()">
+                        <i class="fas fa-plus"></i> Nova Conta
+                    </button>
+                </div>
+                
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Vencimento</th>
+                                <th>Categoria</th>
+                                <th>Recorrente</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bills-table">
+                            <!-- Contas serão carregadas aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Clientes -->
+            <section id="clients" class="tab-content">
+                <h2><i class="fas fa-users"></i> Gestão de Clientes</h2>
+                
+                <div class="section-header">
+                    <button class="btn btn-primary" onclick="openClientModal()">
+                        <i class="fas fa-plus"></i> Novo Cliente
+                    </button>
+                    <button class="btn btn-secondary" onclick="showInactiveClients()">
+                        <i class="fas fa-user-times"></i> Clientes Inativos
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>ID</th>
+                                <th>Nome/Razão Social</th>
+                                <th>CNPJ/CPF</th>
+                                <th>Módulos</th>
+                                <th>Honorários</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clients-table-body">
+                            <!-- Clientes serão carregados aqui -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Modal de Detalhes do Cliente -->
+                <div id="client-details-modal" class="modal">
+                    <div class="modal-content modal-lg">
+                        <div class="modal-header">
+                            <h3>Detalhes do Cliente</h3>
+                            <span class="close" onclick="closeClientDetailsModal()">&times;</span>
+                        </div>
+                        <div class="client-details-content">
+                            <!-- Detalhes do cliente serão carregados aqui -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pagamentos -->
+            <section id="payments" class="tab-content">
+                <h2><i class="fas fa-money-bill-wave"></i> Gestão de Recebimentos</h2>
+                
+                <div class="section-header">
+                    <button class="btn btn-primary" onclick="openPaymentModal()">
+                        <i class="fas fa-plus"></i> Novo Pagamento
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Valor</th>
+                                <th>Data Pagamento</th>
+                                <th>Data Registro</th>
+                                <th>Observações</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payments-table-body">
+                            <!-- Pagamentos serão carregados aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Relatórios -->
+            <section id="relatorios-section" class="tab-content">
+                <h2><i class="fas fa-chart-bar"></i> Relatórios e Contratos</h2>
+                
+                <div class="card-container">
+                    <!-- Card de Relatórios Financeiros -->
+                    <div class="report-card">
+                        <h3><i class="fas fa-file-alt"></i> Relatórios Financeiros</h3>
+                        <div class="report-controls">
+                            <div class="form-group">
+                                <label for="reportType">Tipo de Relatório:</label>
+                                <select id="reportType" class="form-control">
+                                    <option value="monthly">Mensal</option>
+                                    <option value="semester">Semestral</option>
+                                    <option value="yearly">Anual</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="reportMonth">Mês:</label>
+                                <select id="reportMonth" class="form-control">
+                                    <option value="01">Janeiro</option>
+                                    <option value="02">Fevereiro</option>
+                                    <option value="03">Março</option>
+                                    <option value="04">Abril</option>
+                                    <option value="05">Maio</option>
+                                    <option value="06">Junho</option>
+                                    <option value="07">Julho</option>
+                                    <option value="08">Agosto</option>
+                                    <option value="09">Setembro</option>
+                                    <option value="10">Outubro</option>
+                                    <option value="11">Novembro</option>
+                                    <option value="12">Dezembro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="reportYear">Ano:</label>
+                                <select id="reportYear" class="form-control">
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="generateReport()">
+                                <i class="fas fa-print"></i> Gerar Relatório
+                            </button>
+                        </div>
+                        <div id="report-preview" class="preview-container">
+                            <!-- Prévia do relatório será exibida aqui -->
+                            <p class="placeholder-text">Selecione os parâmetros e clique em Gerar Relatório</p>
+                        </div>
+                    </div>
+
+                    <!-- Card de Contratos -->
+                    <div class="report-card">
+                        <h3><i class="fas fa-file-contract"></i> Contratos</h3>
+                        <div class="contract-controls">
+                            <div class="form-group">
+                                <label for="contractClient">Cliente:</label>
+                                <select id="contractClient" class="form-control">
+                                    <option value="">Selecione um cliente</option>
+                                    <!-- Clientes serão carregados aqui -->
+                                </select>
+                            </div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" onclick="generateContract()">
+                                    <i class="fas fa-file-signature"></i> Gerar Contrato
+                                </button>
+                                <button class="btn btn-secondary" onclick="viewContracts()">
+                                    <i class="fas fa-folder-open"></i> Ver Contratos
+                                </button>
+                            </div>
+                        </div>
+                        <div id="contract-preview" class="preview-container">
+                            <!-- Prévia do contrato será exibida aqui -->
+                            <p class="placeholder-text">Selecione um cliente e clique em Gerar Contrato</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal de Cliente -->
+    <div id="client-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="client-modal-title">Novo Cliente</h3>
+                <span class="close" onclick="closeClientModal()">&times;</span>
+            </div>
+            <form id="client-form">
+                <div class="form-group">
+                    <label for="nome">Nome/Razão Social *</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="cnpjCpf">CNPJ/CPF *</label>
+                    <input type="text" id="cnpjCpf" name="cnpjCpf" required>
+                </div>
+                <div class="form-group">
+                    <label for="enderecoCnpj">Endereço do CNPJ *</label>
+                    <textarea id="enderecoCnpj" name="enderecoCnpj" rows="2" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tipoTributacao">Tipo de Tributação *</label>
+                    <select id="tipoTributacao" name="tipoTributacao" required>
+                        <option value="">Selecione o tipo de tributação</option>
+                        <option value="MEI">MEI</option>
+                        <option value="Simples Nacional">Simples Nacional</option>
+                        <option value="Lucro Presumido">Lucro Presumido</option>
+                        <option value="Lucro Real">Lucro Real</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefone">Telefone *</label>
+                    <input type="tel" id="telefone" name="telefone" required>
+                </div>
+                <div class="form-group">
+                    <label for="honorariosMensais">Honorários Mensais (R$) *</label>
+                    <input type="number" id="honorariosMensais" name="honorariosMensais" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="socios">Sócios (CPF e Endereço)</label>
+                    <textarea id="socios" name="socios" rows="3" placeholder="Ex: CPF: 123.456.789-00 - Endereço: Rua A, 123, Bairro, Cidade/UF"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Módulos de Serviços Contratados</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="modulos" value="Fiscal">
+                            <span class="checkmark"></span>
+                            Fiscal
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="modulos" value="Folha de Pagamento">
+                            <span class="checkmark"></span>
+                            Folha de Pagamento
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="modulos" value="Contabilidade">
+                            <span class="checkmark"></span>
+                            Contabilidade
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="modulos" value="Societário">
+                            <span class="checkmark"></span>
+                            Societário
+                        </label>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeClientModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Pagamento -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Novo Pagamento</h3>
+                <span class="close" onclick="closePaymentModal()">&times;</span>
+            </div>
+            <form id="payment-form">
+                <div class="form-group">
+                    <label for="clientId">Cliente *</label>
+                    <select id="clientId" name="clientId" required>
+                        <option value="">Selecione um cliente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="valor">Valor (R$) *</label>
+                    <input type="number" id="valor" name="valor" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="dataPagamento">Data do Pagamento *</label>
+                    <input type="date" id="dataPagamento" name="dataPagamento" required>
+                </div>
+                <div class="form-group">
+                    <label for="observacoes">Observações (opcional)</label>
+                    <textarea id="observacoes" name="observacoes" rows="3" placeholder="Adicione observações sobre o pagamento..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closePaymentModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmar Ação</h3>
+                <span class="close" onclick="closeConfirmModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message">Tem certeza que deseja realizar esta ação?</p>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancelar</button>
+                <button class="btn btn-danger" id="confirm-action">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Lista de Clientes -->
+    <div id="clients-list-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="clients-list-title">Lista de Clientes</h3>
+                <span class="close" onclick="closeClientsListModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="clients-list-content">
+                    <!-- Lista de clientes será carregada aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Pagamento Manual -->
+    <div id="manual-payment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmar Pagamento Manual</h3>
+                <span class="close" onclick="closeManualPaymentModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="manual-payment-client">Cliente</label>
+                    <input type="text" id="manual-payment-client" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="manual-payment-value">Valor dos Honorários (R$)</label>
+                    <input type="text" id="manual-payment-value" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="manual-payment-date">Data do Pagamento *</label>
+                    <input type="date" id="manual-payment-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="manual-payment-notes">Observações (opcional)</label>
+                    <textarea id="manual-payment-notes" rows="3" placeholder="Adicione observações sobre o pagamento..."></textarea>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeManualPaymentModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="registerManualPayment()">Confirmar Pagamento</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Inativação de Cliente -->
+    <div id="inactivate-client-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Inativar Cliente</h3>
+                <span class="close" onclick="closeInactivateClientModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="motivoInativacao">Motivo da Rescisão de Contrato *</label>
+                    <textarea id="motivoInativacao" name="motivoInativacao" rows="4" placeholder="Descreva o motivo da inativação do cliente..." required></textarea>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeInactivateClientModal()">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="confirmInactivateClient()">Confirmar Inativação</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Histórico de Honorários -->
+    <div id="honorarios-history-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="honorarios-history-title">Histórico de Alterações de Honorários</h3>
+                <span class="close" onclick="closeHonorariosHistoryModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="honorarios-history-content">
+                    <!-- Histórico será carregado aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Clientes Inativos -->
+    <div id="inactive-clients-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Clientes Inativos</h3>
+                <span class="close" onclick="closeInactiveClientsModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="inactive-clients-content">
+                    <!-- Lista de clientes inativos será carregada aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Contas a Pagar -->
+    <div id="bill-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nova Conta a Pagar</h3>
+                <span class="close" onclick="closeBillModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="bill-form">
+                    <div class="form-group">
+                        <label for="billDescription">Descrição da Conta *</label>
+                        <input type="text" id="billDescription" name="billDescription" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="billValue">Valor (R$) *</label>
+                        <input type="number" id="billValue" name="billValue" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="billDueDate">Data de Vencimento *</label>
+                        <input type="date" id="billDueDate" name="billDueDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="billCategory">Categoria</label>
+                        <select id="billCategory" name="billCategory">
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Prestação da casa">Prestação da casa</option>
+                            <option value="Energia">Energia</option>
+                            <option value="Água">Água</option>
+                            <option value="Internet">Internet</option>
+                            <option value="Telefone">Telefone</option>
+                            <option value="Cartão de crédito">Cartão de crédito</option>
+                            <option value="Sistemas">Sistemas</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="billRecurrent">Recorrência</label>
+                        <select id="billRecurrent" name="billRecurrent">
+                            <option value="false">Não recorrente (apenas este mês)</option>
+                            <option value="true">Recorrente (todos os meses)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="billNotes">Observações</label>
+                        <textarea id="billNotes" name="billNotes" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeBillModal()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Conta</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Contas a Pagar Próximas -->
+<div id="bills-to-pay-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Contas a Pagar Próximas</h3>
+            <span class="close" id="close-bills-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div id="bills-to-pay-list" class="list-container">
+                <!-- Lista de contas a pagar será carregada aqui -->
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Carregar o script principal após o DOM estar pronto
+            const script = document.createElement('script');
+            script.src = 'script.js';
+            document.body.appendChild(script);
+        });
+    </script>
+</body>
+</html>

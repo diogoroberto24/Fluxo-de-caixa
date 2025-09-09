@@ -1,0 +1,4 @@
+criar botão relatório:
+	IRA EXIBIR OPÇOES DE RELATÓRIOS: RELATÓRIO DO Mês, ANO E CONTRATOS
+
+adicionar botão de CONTAS A PAGAR dentro da DASHBOARD

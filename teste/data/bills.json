@@ -1,0 +1,13 @@
+[
+  {
+    "id": "1756584187708",
+    "descricao": "Conta de Teste",
+    "valor": 500,
+    "dataVencimento": "2025-08-30",
+    "dataPagamento": null,
+    "categoria": "Despesas Gerais",
+    "status": "pago",
+    "recorrente": false,
+    "observacoes": ""
+  }
+]
